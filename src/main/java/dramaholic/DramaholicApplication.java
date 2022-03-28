@@ -3,7 +3,7 @@ package dramaholic;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication (scanBasePackages={"dramaholic"})
 public class DramaholicApplication {
 
 	public static void main(String[] args) {

@@ -1,32 +1,57 @@
 package dramaholic.customer;
 
+import dramaholic.movie.Movie;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 import javax.persistence.*;
+import java.util.Deque;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @EnableAutoConfiguration
 public class Customer {
     private @Id @GeneratedValue Long id;
+    @Column(nullable = false)
     private String name;
     private Long age;
+    @Column(nullable = false)
+    private String username;
+    @Column(nullable = false)
+    private String password;
+    private String email;
+    @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
+    private Set<Movie> watchLater;
+    @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
+    private Set<Movie> history;
 
-    public Customer() {
+    public Set<Movie> getWatchLater() {
+        return watchLater;
     }
 
-    public Customer(String name, Long age) {
+    public void setWatchLater(Set<Movie> watchLater) {
+        this.watchLater = watchLater;
+    }
+
+    public Customer(String name, Long age, String username, String password, String email, Set<Movie> watchLater, Set<Movie> history) {
         this.name = name;
         this.age = age;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.watchLater = watchLater;
+        this.history = history;
     }
 
-    @Override
-    public String toString() {
-        return "Customer{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", age=" + age +
-                '}';
+    public Set<Movie> getHistory() {
+        return history;
+    }
+
+    public void setHistory(Set<Movie> history) {
+        this.history = history;
+    }
+
+    public Customer() {
     }
 
     @Override
@@ -34,12 +59,25 @@ public class Customer {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Customer customer = (Customer) o;
-        return id.equals(customer.id) && name.equals(customer.name) && Objects.equals(age, customer.age);
+        return id.equals(customer.id) && username.equals(customer.username);
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", watchLater=" + watchLater +
+                ", history=" + history +
+                '}';
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, age);
+        return Objects.hash(id, username);
     }
 
     public Long getId() {
