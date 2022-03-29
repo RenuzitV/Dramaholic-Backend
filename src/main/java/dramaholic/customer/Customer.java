@@ -4,6 +4,7 @@ import dramaholic.movie.Movie;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Deque;
 import java.util.Objects;
 import java.util.Set;
@@ -14,7 +15,8 @@ public class Customer {
     private @Id @GeneratedValue Long id;
     @Column(nullable = false)
     private String name;
-    private Long age;
+    @Column(nullable = false)
+    private LocalDate dob;
     @Column(nullable = false)
     private String username;
     @Column(nullable = false)
@@ -33,9 +35,9 @@ public class Customer {
         this.watchLater = watchLater;
     }
 
-    public Customer(String name, Long age, String username, String password, String email, Set<Movie> watchLater, Set<Movie> history) {
+    public Customer(String name, LocalDate dob, String username, String password, String email, Set<Movie> watchLater, Set<Movie> history) {
         this.name = name;
-        this.age = age;
+        this.dob = dob;
         this.username = username;
         this.password = password;
         this.email = email;
@@ -62,11 +64,43 @@ public class Customer {
         return id.equals(customer.id) && username.equals(customer.username);
     }
 
+    public LocalDate getDob() {
+        return dob;
+    }
+
+    public void setDob(LocalDate dob) {
+        this.dob = dob;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public String toString() {
         return "Customer{" +
                 "name='" + name + '\'' +
-                ", age=" + age +
+                ", dob=" + dob +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
@@ -94,13 +128,5 @@ public class Customer {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Long getAge() {
-        return age;
-    }
-
-    public void setAge(Long age) {
-        this.age = age;
     }
 }
