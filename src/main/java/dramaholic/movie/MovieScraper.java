@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -140,7 +141,7 @@ public class MovieScraper{
 
         movie.setCountry(json.get("original_language").getAsString());
 
-        movie.setThumbnail("https://image.tmdb.org/t/p/original" + json.get("images").getAsJsonObject().get("posters").getAsJsonArray().get(0).getAsJsonObject().get("file_path").getAsString());
+        movie.setThumbnail("https://image.tmdb.org/t/p/original" + json.get("poster_path").getAsString());
 
         JsonArray array = json.get("videos").getAsJsonObject().get("results").getAsJsonArray();
         for (JsonElement element : array){
@@ -164,12 +165,12 @@ public class MovieScraper{
         return null;
     }
 
-//    @Bean
-//    public void run() throws Exception{
+    @Bean
+    public void run() throws Exception{
 //        List<Movie> movies = scrapeMovies(50, "ko");
 //        movies.addAll(scrapeMovies(50, ""));
 //        System.out.println(movies.size());
 //        unique(movies);
 //        System.out.println(movies.size());
-//    }
+    }
 }
