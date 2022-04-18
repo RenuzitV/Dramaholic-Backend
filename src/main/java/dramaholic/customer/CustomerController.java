@@ -36,7 +36,7 @@ public class CustomerController {
         return Sort.Direction.ASC;
     }
 
-    @PutMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<String> addCustomer(@ModelAttribute Customer customer) {
         if (customerService.isValid(customer)) {
             customerService.addCustomer(customer);

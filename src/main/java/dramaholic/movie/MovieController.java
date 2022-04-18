@@ -36,7 +36,7 @@ public class MovieController {
         return Sort.Direction.ASC;
     }
 
-    @PutMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<String> addCustomer(@ModelAttribute Movie movie) {
         if (movieService.isValid(movie)) {
             movieService.addMovie(movie);
