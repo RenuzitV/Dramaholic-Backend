@@ -1,5 +1,6 @@
 package dramaholic.movie;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 import javax.persistence.*;
@@ -40,6 +41,7 @@ public class Movie {
     @Column(nullable = false)
     private String thumbnail;
     @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
+    @JsonBackReference
     private List<Movie> suggestions;
 
     public Movie() {

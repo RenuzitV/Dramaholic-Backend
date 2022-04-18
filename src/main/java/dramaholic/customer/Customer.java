@@ -1,11 +1,13 @@
 package dramaholic.customer;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import dramaholic.movie.Movie;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.servlet.annotation.MultipartConfig;
 import java.time.LocalDate;
-import java.util.Deque;
 import java.util.Objects;
 import java.util.Set;
 
@@ -16,6 +18,7 @@ public class Customer {
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate dob;
     @Column(nullable = false)
     private String username;
