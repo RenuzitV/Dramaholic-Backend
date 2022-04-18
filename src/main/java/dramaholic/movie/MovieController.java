@@ -82,7 +82,6 @@ public class MovieController {
             return new ResponseEntity<>(moviePage, responseHeaders, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-
         }
     }
 
