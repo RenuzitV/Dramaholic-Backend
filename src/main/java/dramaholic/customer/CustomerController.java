@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("api/customers")
 public class CustomerController {
     private final CustomerService customerService;
