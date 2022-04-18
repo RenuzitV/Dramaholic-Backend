@@ -7,15 +7,21 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CustomerService {
+    private final CustomerRepository customerRepository;
 
     @Autowired
-    private CustomerRepository CustomerRepository;
+    public CustomerService(CustomerRepository customerRepository){
+            this.customerRepository = customerRepository;
+    }
+
+    public boolean isValid(Customer s){
+        return s.getName() != null && s.getDob() != null && s.getUsername() != null && s.getPassword() != null;
+    }
 
     // Add new Customer
     public String addCustomer(Customer s) {
-
         try {
-            CustomerRepository.save(s);
+            customerRepository.save(s);
             return "saved";
         } catch(Exception e) {
             return "failed";
@@ -27,7 +33,7 @@ public class CustomerService {
     public String updateCustomer(Long id, Customer s) {
         try {
             s.setId(id);
-            CustomerRepository.save(s);
+            customerRepository.save(s);
             return "Updated";
         }catch(Exception e) {
             return "Failed";
@@ -36,19 +42,19 @@ public class CustomerService {
 
     // Get all Customers
     public Iterable<Customer> getAllCustomer(){
-        return CustomerRepository.findAll();
+        return customerRepository.findAll();
     }
 
     // Get single Customer by Id
     public Optional<Customer> getCustomer(Long id) {
-        return CustomerRepository.findById(id);
+        return customerRepository.findById(id);
     }
 
 
     // Delete a Customer
     public String deleteCustomer(Long id) {
         try{
-            CustomerRepository.deleteById(id);
+            customerRepository.deleteById(id);
             return "Deleted";
         }catch(Exception e) {
             return "Failed";
