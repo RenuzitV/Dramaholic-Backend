@@ -37,9 +37,9 @@ public class MovieService {
     }
 
     @Async
-    public void reloadDatabase(){
-        List<Movie> movies = movieScraper.scrapeMovies(50, "ko");
-        movies.addAll(movieScraper.scrapeMovies(50, ""));
+    public void reloadDatabase(int g, int ko){
+        List<Movie> movies = movieScraper.scrapeMovies(g, "");
+        movies.addAll(movieScraper.scrapeMovies(ko, "ko"));
 
         movieScraper.unique(movies);
 

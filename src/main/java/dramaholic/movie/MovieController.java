@@ -113,8 +113,10 @@ public class MovieController {
     }
 
     @PostMapping("/loadDatabase")
-    public String reloadDatabase(){
-        movieService.reloadDatabase();
+    public String reloadDatabase(
+            @RequestParam(defaultValue = "50") int g,
+            @RequestParam(defaultValue = "50") int ko){
+        movieService.reloadDatabase(g, ko);
         return "ok";
     }
 }
