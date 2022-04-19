@@ -4,23 +4,22 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @EnableAutoConfiguration
-public class Movie {
-    private @Id
-    @GeneratedValue
-    @Column(nullable = false)
-    Long id;
+public class Movie implements Serializable {
     @Column(nullable = false)
     private String title;
     @Column(nullable = false)
     private String originalTitle;
     @Column(nullable = false)
     private String href;
+    @Id
+    @GeneratedValue
     @Column(nullable = false)
     private Long dbID;
     @Column(length=400)
@@ -40,7 +39,7 @@ public class Movie {
     private List<String> tags;
     @Column(nullable = false)
     private String thumbnail;
-    @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "dbID", fetch = FetchType.LAZY)
     @JsonBackReference
     private List<Movie> suggestions;
 

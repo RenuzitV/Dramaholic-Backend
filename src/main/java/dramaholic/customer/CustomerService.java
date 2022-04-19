@@ -30,9 +30,8 @@ public class CustomerService {
 
 
     // Update a Customer
-    public String updateCustomer(Long id, Customer s) {
+    public String updateCustomer(Customer s) {
         try {
-            s.setId(id);
             customerRepository.save(s);
             return "Updated";
         }catch(Exception e) {
