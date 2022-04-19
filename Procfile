@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT $JAVA_OPTS -jar target/dramaholic-0.0.1-SNAPSHOT.jar
+web: java -Dserver.port=$PORT $JAVA_OPTS -java $JAVA_OPTS -cp target/classes:target/dependency/* DramaholicApplication target/dramaholic-0.0.1-SNAPSHOT.jar
