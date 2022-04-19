@@ -1,6 +1,7 @@
 package dramaholic.movie;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 import javax.persistence.*;
@@ -19,7 +20,8 @@ public class Movie implements Serializable {
     @Column(nullable = false)
     private String href;
     @Id
-    @GeneratedValue
+    @GenericGenerator(name = "dbID", strategy = "dramaholic.movie.MovieSequenceGen")
+    @GeneratedValue(generator = "dbID")
     @Column(nullable = false)
     private Long dbID;
     @Column(length=400)
@@ -57,6 +59,7 @@ public class Movie implements Serializable {
     @Override
     public String toString() {
         return "Movie{" +
+                "id= " + dbID + '\'' +
                 "title='" + title + '\'' +
                 ", originalTitle=" + originalTitle +
                 ", href='" + href + '\'' +

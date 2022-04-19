@@ -13,13 +13,13 @@ import java.util.List;
 public class MovieService {
     private final MovieRepository movieRepository;
     private final MovieScraper movieScraper;
-    private final dramaholic.movie.QMovie movie;
+    private final QMovie movie;
 
     @Autowired
     MovieService(MovieRepository movieRepository, MovieScraper movieScraper){
         this.movieRepository = movieRepository;
         this.movieScraper = movieScraper;
-        this.movie = dramaholic.movie.QMovie.movie;
+        this.movie = QMovie.movie;
     }
 
     public boolean isValid(Movie movie){
