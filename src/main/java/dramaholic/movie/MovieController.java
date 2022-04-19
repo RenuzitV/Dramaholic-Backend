@@ -117,6 +117,6 @@ public class MovieController {
             @RequestParam(defaultValue = "50") int g,
             @RequestParam(defaultValue = "50") int ko){
         movieService.reloadDatabase(g, ko);
-        return "ok";
+        return g + " general " + ko + " ko";
     }
 }
