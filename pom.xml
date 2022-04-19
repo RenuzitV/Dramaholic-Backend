@@ -14,7 +14,7 @@
 	<name>dramaholic</name>
 	<description>Final project for EEET2580</description>
 	<properties>
-		<java.version>11</java.version>
+<!--		<java.version>11</java.version>-->
 		<querydsl.version>5.0.0</querydsl.version>
 	</properties>
 	<dependencies>
