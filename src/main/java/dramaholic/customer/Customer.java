@@ -7,38 +7,40 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.servlet.annotation.MultipartConfig;
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @EnableAutoConfiguration
-public class Customer {
-    private @Id @GeneratedValue Long id;
+public class Customer implements Serializable {
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate dob;
     @Column(nullable = false)
+    @Id
     private String username;
     @Column(nullable = false)
     private String password;
     private String email;
-    @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
-    private Set<Movie> watchLater;
-    @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
-    private Set<Movie> history;
+    @OneToMany(mappedBy = "dbID", fetch = FetchType.LAZY)
+    private List<Movie> watchLater;
+    @OneToMany(mappedBy = "dbID", fetch = FetchType.LAZY)
+    private List<Movie> history;
 
-    public Set<Movie> getWatchLater() {
+    public List<Movie> getWatchLater() {
         return watchLater;
     }
 
-    public void setWatchLater(Set<Movie> watchLater) {
+    public void setWatchLater(List<Movie> watchLater) {
         this.watchLater = watchLater;
     }
 
-    public Customer(String name, LocalDate dob, String username, String password, String email, Set<Movie> watchLater, Set<Movie> history) {
+    public Customer(String name, LocalDate dob, String username, String password, String email, List<Movie> watchLater, List<Movie> history) {
         this.name = name;
         this.dob = dob;
         this.username = username;
@@ -48,11 +50,11 @@ public class Customer {
         this.history = history;
     }
 
-    public Set<Movie> getHistory() {
+    public List<Movie> getHistory() {
         return history;
     }
 
-    public void setHistory(Set<Movie> history) {
+    public void setHistory(List<Movie> history) {
         this.history = history;
     }
 
@@ -64,7 +66,7 @@ public class Customer {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Customer customer = (Customer) o;
-        return id.equals(customer.id) && username.equals(customer.username);
+        return username.equals(customer.username);
     }
 
     public LocalDate getDob() {
@@ -114,15 +116,7 @@ public class Customer {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        return Objects.hash(username);
     }
 
     public String getName() {
