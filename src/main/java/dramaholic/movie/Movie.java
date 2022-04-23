@@ -3,6 +3,7 @@ package dramaholic.movie;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -32,6 +33,7 @@ public class Movie implements Serializable {
     private Double duration;
     private Long episodes;
     private String country;
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate date;
     @ElementCollection
     private List<String> actor;
