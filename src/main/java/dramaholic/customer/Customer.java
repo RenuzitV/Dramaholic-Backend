@@ -1,5 +1,6 @@
 package dramaholic.customer;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import dramaholic.movie.Movie;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -28,8 +29,10 @@ public class Customer implements Serializable {
     private String password;
     private String email;
     @OneToMany(mappedBy = "dbID", fetch = FetchType.LAZY)
+    @JsonBackReference
     private List<Movie> watchLater;
     @OneToMany(mappedBy = "dbID", fetch = FetchType.LAZY)
+    @JsonBackReference
     private List<Movie> history;
 
     public List<Movie> getWatchLater() {

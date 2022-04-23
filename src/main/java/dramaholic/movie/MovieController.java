@@ -119,4 +119,11 @@ public class MovieController {
         movieService.reloadDatabase(g, ko);
         return g + " general " + ko + " ko";
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteMovie(@PathVariable Long id){
+        Long res = movieService.deleteMovieByID(id);
+        if (res == 1) return new ResponseEntity<>("Deleted", HttpStatus.OK);
+        else return new ResponseEntity<>("Not deleted", HttpStatus.NOT_FOUND);
+    }
 }

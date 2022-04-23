@@ -37,7 +37,7 @@ public class CustomerController {
     }
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<String> addCustomer(@ModelAttribute Customer customer) {
+    public ResponseEntity<String> addCustomer(@RequestBody Customer customer) {
         if (customerService.isValid(customer)) {
             customerService.addCustomer(customer);
             return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -50,7 +50,7 @@ public class CustomerController {
     public ResponseEntity<Page<Customer>> getCustomers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "id,desc") String[] sort){
+            @RequestParam(defaultValue = "username,desc") String[] sort){
         try {
             List<Order> orders = new ArrayList<>();
             if (sort[0].contains(",")) {
@@ -76,5 +76,12 @@ public class CustomerController {
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @DeleteMapping("/{username}")
+    public ResponseEntity<String> deleteCustomer(@PathVariable String username){
+        Long res = customerService.deleteCustomerByUsername(username);
+        if (res == 1) return new ResponseEntity<>("Deleted", HttpStatus.OK);
+        else return new ResponseEntity<>("Not deleted", HttpStatus.NOT_FOUND);
     }
 }

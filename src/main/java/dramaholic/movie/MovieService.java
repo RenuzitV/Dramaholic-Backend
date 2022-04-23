@@ -58,4 +58,8 @@ public class MovieService {
     public Movie findById(Long id){
         return movieRepository.findFirstByDbID(id);
     }
+
+    public Long deleteMovieByID(Long id) {
+        return movieRepository.deleteByDbID(id);
+    }
 }

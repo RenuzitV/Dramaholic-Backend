@@ -61,4 +61,7 @@ public class CustomerService {
     }
 
 
+    public Long deleteCustomerByUsername(String username) {
+        return customerRepository.deleteCustomerByUsernameEquals(username);
+    }
 }
