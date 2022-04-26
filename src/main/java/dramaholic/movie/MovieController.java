@@ -87,7 +87,8 @@ public class MovieController {
             @RequestParam(defaultValue = "0") Double rateGT,
             @RequestParam(defaultValue = "10") Double rateLTE,
             @RequestParam(defaultValue = "0") Long episodesGT,
-            @RequestParam(defaultValue = "50") Long episodesLTE){
+            @RequestParam(defaultValue = "50") Long episodesLTE,
+            @RequestParam(defaultValue = "") String[] country){
         try {
             List<Order> orders = new ArrayList<>();
             for (int i = 0; i < sort.length; i += 2){
@@ -100,7 +101,7 @@ public class MovieController {
             }
             Pageable pagingSort = PageRequest.of(page, size, Sort.by(orders));
 
-            Page<Movie> moviePage = movieService.find(title, rateGT, rateLTE, episodesGT, episodesLTE, pagingSort);
+            Page<Movie> moviePage = movieService.find(title, rateGT, rateLTE, episodesGT, episodesLTE, country, pagingSort);
 
             HttpHeaders responseHeaders = new HttpHeaders();
             List<MediaType> medias = new ArrayList<>();
@@ -112,12 +113,19 @@ public class MovieController {
         }
     }
 
+    //future me please dont add more than 120 movies
     @PostMapping("/loadDatabase")
     public String reloadDatabase(
             @RequestParam(defaultValue = "50") int g,
             @RequestParam(defaultValue = "50") int ko){
         movieService.reloadDatabase(g, ko);
         return g + " general " + ko + " ko";
+    }
+    //future me please dont add more than 120 movies
+    @PostMapping("/loadDatabase/{id}")
+    public ResponseEntity<Movie> reloadDatabase(@PathVariable Long id){
+        return new ResponseEntity<>(movieService.addMovie(id), HttpStatus.OK);
+
     }
 
     @DeleteMapping("/{id}")

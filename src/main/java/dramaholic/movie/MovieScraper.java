@@ -105,11 +105,11 @@ public class MovieScraper{
         return response;
     }
 
-//https://api.themoviedb.org/3/tv/99966?api_key=2a51e561a490f304053dd6d7c06dbe16&append_to_response=images,videos
+//https://api.themoviedb.org/3/tv/99966?api_key=2a51e561a490f304053dd6d7c06dbe16&append_to_response=images,videos,credits
     public Movie makeMovieFromID(String id){
         HashMap<String, String> param = new HashMap<>();
         param.put("api_key", api_key);
-        param.put("append_to_response", "images,videos");
+        param.put("append_to_response", "images,videos,credits");
 
         ResponseEntity<String> response = getResponse("https://api.themoviedb.org/3/tv/"+id, param);
 
@@ -119,31 +119,53 @@ public class MovieScraper{
 
         Movie movie = new Movie();
 
+        //ID
         movie.setDbID(json.get("id").getAsLong());
 
+        //TITLE
         movie.setTitle(json.get("name").getAsString());
 
+        //ORIGINAL TITLE
         movie.setOriginalTitle(json.get("original_name").getAsString());
 
+        //DIRECTOR
         json.get("created_by").getAsJsonArray().forEach(element -> movie.addDirector(element.getAsJsonObject().get("name").getAsString()));
 
+        //DESCRIPTION
         movie.setDescription(json.get("overview").getAsString());
         if (movie.getDescription().length() > 400) return null;
 
+        //RATING
         movie.setRating(json.get("vote_average").getAsDouble());
 
+        //GENRES
         json.get("genres").getAsJsonArray().forEach(element -> movie.addGenres(element.getAsJsonObject().get("name").getAsString()));
 
+        //RATING
         movie.setRating(json.get("vote_average").getAsDouble());
 
+        //DATE
         movie.setDate(LocalDate.parse(json.get("first_air_date").getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-d")));
 
+        //EPISODES, DEPRECATED
         movie.setEpisodes(json.get("number_of_episodes").getAsLong());
 
+        //ORIGINAL LANGUAGE
         movie.setCountry(json.get("original_language").getAsString());
 
+        //THUMBNAIL, DEPRECATED, KEPT FOR BACKWARDS COMPATIBILITY
         movie.setThumbnail("https://image.tmdb.org/t/p/original" + json.get("poster_path").getAsString());
 
+        //LANDSCAPE THUMBNAIL
+        JsonArray thumbnails = json.get("images").getAsJsonObject().get("backdrops").getAsJsonArray();
+        for (JsonElement element : thumbnails){
+            if (element.getAsJsonObject().get("aspect_ratio").getAsDouble() > 1){
+                movie.setThumbnail_landscape(element.getAsJsonObject().get("file_path").getAsString());
+                break;
+            }
+        }
+
+        //TRAILER/TEASER
         JsonArray array = json.get("videos").getAsJsonObject().get("results").getAsJsonArray();
         for (JsonElement element : array){
             if (element.getAsJsonObject().get("site").getAsString().equals("YouTube") && element.getAsJsonObject().get("type").getAsString().equals("Trailer")){
@@ -162,6 +184,9 @@ public class MovieScraper{
         }
 
         if (movie.getHref() != null) return movie;
+        //TRAILER/TEASER
+
+
 
         return null;
     }

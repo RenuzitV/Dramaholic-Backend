@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @EnableAutoConfiguration
@@ -33,6 +34,7 @@ public class Movie implements Serializable {
     private Double duration;
     private Long episodes;
     private String country;
+    private boolean adult;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate date;
     @ElementCollection
@@ -43,6 +45,10 @@ public class Movie implements Serializable {
     private List<String> tags;
     @Column(nullable = false)
     private String thumbnail;
+    @Column()
+    private String thumbnail_portrait;
+    @Column()
+    private String thumbnail_landscape;
     @OneToMany(mappedBy = "dbID", fetch = FetchType.LAZY)
     @JsonBackReference
     private List<Movie> suggestions;
@@ -61,9 +67,9 @@ public class Movie implements Serializable {
     @Override
     public String toString() {
         return "Movie{" +
-                "id= " + dbID + '\'' +
-                "title='" + title + '\'' +
-                ", originalTitle=" + originalTitle +
+                "id=" + dbID +
+                ", title='" + title + '\'' +
+                ", originalTitle='" + originalTitle + '\'' +
                 ", href='" + href + '\'' +
                 ", description='" + description + '\'' +
                 ", genres='" + genres + '\'' +
@@ -76,8 +82,20 @@ public class Movie implements Serializable {
                 ", director='" + director + '\'' +
                 ", tags='" + tags + '\'' +
                 ", thumbnail='" + thumbnail + '\'' +
-                ", suggestions=" + suggestions +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Movie movie = (Movie) o;
+        return dbID.equals(movie.dbID);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(dbID);
     }
 
     /////////////////////////// SETTERS & GETTERS
@@ -222,5 +240,29 @@ public class Movie implements Serializable {
     public void addSuggestions(Movie suggestion) {
         if (this.suggestions == null) this.suggestions = new ArrayList<>();
         this.suggestions.add(suggestion);
+    }
+
+    public boolean isAdult() {
+        return adult;
+    }
+
+    public void setAdult(boolean adult) {
+        this.adult = adult;
+    }
+
+    public String getThumbnail_portrait() {
+        return thumbnail_portrait;
+    }
+
+    public void setThumbnail_portrait(String thumbnail_portrait) {
+        this.thumbnail_portrait = thumbnail_portrait;
+    }
+
+    public String getThumbnail_landscape() {
+        return thumbnail_landscape;
+    }
+
+    public void setThumbnail_landscape(String thumbnail_landscape) {
+        this.thumbnail_landscape = thumbnail_landscape;
     }
 }

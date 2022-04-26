@@ -1,6 +1,10 @@
 package dramaholic.customer;
 
+import dramaholic.movie.Movie;
+import dramaholic.movie.MovieService;
+import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,18 +16,23 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.standard.Media;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/customers")
 public class CustomerController {
     private final CustomerService customerService;
-    private final CustomerRepository customerRepository;
+    private final MovieService movieService;
 
     @Autowired
-    CustomerController(CustomerService customerService, CustomerRepository customerRepository){
-        this.customerRepository = customerRepository;
+    CustomerController(MovieService movieService, CustomerService customerService){
+        this.movieService = movieService;
         this.customerService = customerService;
     }
 
@@ -37,12 +46,11 @@ public class CustomerController {
     }
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<String> addCustomer(@RequestBody Customer customer) {
-        if (customerService.isValid(customer)) {
-            customerService.addCustomer(customer);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        }
-        return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).build();
+    public ResponseEntity<String> addCustomer(@ModelAttribute Customer customer) {
+        if (!customerService.isValid(customer)) return new ResponseEntity<>("not valid", HttpStatus.BAD_REQUEST);
+        if (customerService.exists(customer)) return new ResponseEntity<>("existed username", HttpStatus.BAD_REQUEST);
+        customerService.addCustomer(customer);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping()
@@ -65,7 +73,7 @@ public class CustomerController {
                 orders.add(new Order(getSortDirection(sort[1]), sort[0]));
             }
             Pageable pagingSort = PageRequest.of(page, size, Sort.by(orders));
-            Page<Customer> customerPage = customerRepository.findAll(pagingSort);
+            Page<Customer> customerPage = customerService.getAllCustomer(pagingSort);
 
             HttpHeaders responseHeaders = new HttpHeaders();
             List<MediaType> medias = new ArrayList<>();
@@ -78,10 +86,97 @@ public class CustomerController {
         }
     }
 
-    @DeleteMapping("/{username}")
-    public ResponseEntity<String> deleteCustomer(@PathVariable String username){
-        Long res = customerService.deleteCustomerByUsername(username);
-        if (res == 1) return new ResponseEntity<>("Deleted", HttpStatus.OK);
-        else return new ResponseEntity<>("Not deleted", HttpStatus.NOT_FOUND);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteCustomer(@PathVariable Long id){
+        String res = customerService.deleteCustomerByID(id);
+        if (res.equals("Deleted")) return new ResponseEntity<>("Deleted", HttpStatus.OK);
+        else return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Customer> getCustomer(@PathVariable Long id){
+        Optional<Customer> optionalCustomer = customerService.getCustomer(id);
+        if (optionalCustomer.isEmpty()) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(optionalCustomer.get(), HttpStatus.FOUND);
+    }
+
+    @PutMapping(value ="/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> updateCustomer(@PathVariable Long id, @RequestBody HashMap<String, String> body){
+        Optional<Customer> optionalCustomer = customerService.getCustomer(id);
+        if (optionalCustomer.isEmpty()) return new ResponseEntity<>("not found", HttpStatus.NOT_FOUND);
+        Customer customer = optionalCustomer.get();
+        if (body.get("dob") != null) customer.setDob(LocalDate.parse(body.get("dob"), DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+        if (body.get("email") != null) customer.setEmail(body.get("email"));
+        if (body.get("name") != null) customer.setName(body.get("name"));
+        return new ResponseEntity<>(customerService.updateCustomer(customer), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/login", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Boolean> login(@RequestBody HashMap<String, String> body){
+        boolean res = customerService.checkCredentials(body);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/watchlater", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<List<Movie>> getWatchlater(@RequestBody HashMap<String, String> body){
+        Customer customer = getCustomerFromService(body);
+        System.out.println(customer.getHistory());
+        if (customer == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(customer.getWatchLater(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/history", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<List<Movie>> getHistory(@RequestBody HashMap<String, String> body){
+        Customer customer = getCustomerFromService(body);
+        if (customer == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(customer.getHistory(), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/watchlater", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> addWatchlater(@RequestBody HashMap<String, String> body){
+        boolean customerExists = customerService.checkCredentials(body);
+        if (!customerExists) return new ResponseEntity<>("Invalid credentials", HttpStatus.BAD_REQUEST);
+        boolean movieExists = movieService.exists(Long.parseLong(body.get("dbID")));
+        if (!movieExists) return new ResponseEntity<>("Cannot find movie", HttpStatus.NOT_FOUND);
+        customerService.addWatchlater(body);
+        return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/history", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> addHistory(@RequestBody HashMap<String, String> body){
+        boolean customerExists = customerService.checkCredentials(body);
+        if (!customerExists) return new ResponseEntity<>("Invalid credentials", HttpStatus.BAD_REQUEST);
+        boolean movieExists = movieService.exists(Long.parseLong(body.get("dbID")));
+        if (!movieExists) return new ResponseEntity<>("Cannot find movie", HttpStatus.NOT_FOUND);
+        customerService.addHistory(body);
+        return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/watchlater", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> deleteWatchlater(@RequestBody HashMap<String, String> body){
+        boolean customerExists = customerService.checkCredentials(body);
+        if (!customerExists) return new ResponseEntity<>("Invalid credentials", HttpStatus.BAD_REQUEST);
+        boolean movieExists = movieService.exists(Long.parseLong(body.get("dbID")));
+        if (!movieExists) return new ResponseEntity<>("Cannot find movie", HttpStatus.NOT_FOUND);
+        customerService.removeWatchlater(body);
+        return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/history", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> deleteHistory(@RequestBody HashMap<String, String> body){
+        boolean customerExists = customerService.checkCredentials(body);
+        if (!customerExists) return new ResponseEntity<>("Invalid credentials", HttpStatus.BAD_REQUEST);
+        boolean movieExists = movieService.exists(Long.parseLong(body.get("dbID")));
+        if (!movieExists) return new ResponseEntity<>("Cannot find movie", HttpStatus.NOT_FOUND);
+        customerService.removeHistory(body);
+        return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
+
+    private Customer getCustomerFromService(HashMap<String, String> body){
+        Customer customerInfo = new Customer(body.get("username"), body.get("password"));
+        if (customerInfo.getUsername() == null || customerInfo.getPassword() == null) return null;
+        boolean res = customerService.checkCredentials(customerInfo);
+        if (!res) return null;
+        return customerService.getCustomer(customerInfo);
     }
 }
