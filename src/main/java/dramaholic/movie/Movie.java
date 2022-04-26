@@ -37,7 +37,6 @@ public class Movie implements Serializable {
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate date;
     @ManyToMany
-    @JsonBackReference
     private List<Actor> actors;
     @ElementCollection
     private List<String> director;
@@ -50,7 +49,6 @@ public class Movie implements Serializable {
     @Column()
     private String thumbnail_landscape;
     @ManyToMany(fetch = FetchType.LAZY)
-    @JsonBackReference
     private List<Movie> suggestions;
 
     public Movie() {

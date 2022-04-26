@@ -29,10 +29,8 @@ public class Customer implements Serializable {
     private String password;
     private String email;
     @ManyToMany(fetch = FetchType.LAZY)
-    @JsonBackReference
     private List<Movie> watchLater;
     @ManyToMany(fetch = FetchType.LAZY)
-    @JsonBackReference
     private List<Movie> history;
 
     public Customer(String username, String password) {
