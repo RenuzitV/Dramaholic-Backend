@@ -194,7 +194,7 @@ public class MovieScraper{
             }catch (Exception ignored){
 
             }
-            if (movie.getActors().size() >= 3) break;
+//            if (movie.getActors().size() >= 3) break;
         }
 
 
