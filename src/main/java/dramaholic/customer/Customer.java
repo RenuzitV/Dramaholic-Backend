@@ -9,9 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @EnableAutoConfiguration
@@ -30,10 +28,10 @@ public class Customer implements Serializable {
     @Column(nullable = false)
     private String password;
     private String email;
-    @OneToMany(fetch = FetchType.LAZY)
-    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JsonBackReference
     private List<Movie> watchLater;
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JsonBackReference
     private List<Movie> history;
 
@@ -96,6 +94,8 @@ public class Customer implements Serializable {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
+                ", watchLater='" + watchLater + '\'' +
+                ", history='" + history + '\'' +
                 '}';
     }
 

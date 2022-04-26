@@ -1,9 +1,13 @@
 package dramaholic.movie;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import dramaholic.actor.Actor;
+import dramaholic.actor.ActorRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +37,7 @@ public class MovieScraper{
         return false;
     }
 
-    public void unique(List<Movie> list){
+    public void uniqueMovie(List<Movie> list){
         Set<Long> s = new HashSet<>();
         Iterator<Movie> i = list.iterator();
         while (i.hasNext()) {
@@ -42,6 +46,17 @@ public class MovieScraper{
                 i.remove();
             }
             else s.add(movie.getDbID());
+        }
+    }
+    public void uniqueActor(List<Actor> list){
+        Set<Long> s = new HashSet<>();
+        Iterator<Actor> i = list.iterator();
+        while (i.hasNext()) {
+            Actor actor = i.next();
+            if (s.contains(actor.getId())){
+                i.remove();
+            }
+            else s.add(actor.getId());
         }
     }
 
@@ -160,12 +175,31 @@ public class MovieScraper{
         JsonArray thumbnails = json.get("images").getAsJsonObject().get("backdrops").getAsJsonArray();
         for (JsonElement element : thumbnails){
             if (element.getAsJsonObject().get("aspect_ratio").getAsDouble() > 1){
-                movie.setThumbnail_landscape(element.getAsJsonObject().get("file_path").getAsString());
+                movie.setThumbnail_landscape("https://image.tmdb.org/t/p/original" + element.getAsJsonObject().get("file_path").getAsString());
                 break;
             }
         }
 
+        //ACTORS
+        JsonArray actors = json.get("credits").getAsJsonObject().get("cast").getAsJsonArray();
+        movie.setActors(new ArrayList<>());
+        for (JsonElement element : actors){
+            try {
+                Actor actor = new Actor(
+                        element.getAsJsonObject().get("id").getAsLong(),
+                        element.getAsJsonObject().get("name").getAsString(),
+                        "https://image.tmdb.org/t/p/original" + element.getAsJsonObject().get("profile_path").getAsString(),
+                        element.getAsJsonObject().get("character").getAsString());
+                movie.addActor(actor);
+            }catch (Exception ignored){
+
+            }
+            if (movie.getActors().size() >= 3) break;
+        }
+
+
         //TRAILER/TEASER
+        // MUST BE LAST ONE
         JsonArray array = json.get("videos").getAsJsonObject().get("results").getAsJsonArray();
         for (JsonElement element : array){
             if (element.getAsJsonObject().get("site").getAsString().equals("YouTube") && element.getAsJsonObject().get("type").getAsString().equals("Trailer")){
@@ -186,17 +220,6 @@ public class MovieScraper{
         if (movie.getHref() != null) return movie;
         //TRAILER/TEASER
 
-
-
         return null;
-    }
-
-    @Bean
-    public void run() throws Exception{
-//        List<Movie> movies = scrapeMovies(50, "ko");
-//        movies.addAll(scrapeMovies(50, ""));
-//        System.out.println(movies.size());
-//        unique(movies);
-//        System.out.println(movies.size());
     }
 }

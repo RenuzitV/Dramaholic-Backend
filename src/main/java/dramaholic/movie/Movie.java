@@ -1,6 +1,7 @@
 package dramaholic.movie;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import dramaholic.actor.Actor;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -8,9 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @EnableAutoConfiguration
@@ -37,8 +36,9 @@ public class Movie implements Serializable {
     private boolean adult;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate date;
-    @ElementCollection
-    private List<String> actor;
+    @ManyToMany
+    @JsonBackReference
+    private List<Actor> actors;
     @ElementCollection
     private List<String> director;
     @ElementCollection
@@ -49,7 +49,7 @@ public class Movie implements Serializable {
     private String thumbnail_portrait;
     @Column()
     private String thumbnail_landscape;
-    @OneToMany(mappedBy = "dbID", fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JsonBackReference
     private List<Movie> suggestions;
 
@@ -78,10 +78,11 @@ public class Movie implements Serializable {
                 ", episodes=" + episodes +
                 ", country='" + country + '\'' +
                 ", date=" + date +
-                ", actor='" + actor + '\'' +
+                ", actors='" + actors + '\'' +
                 ", director='" + director + '\'' +
                 ", tags='" + tags + '\'' +
                 ", thumbnail='" + thumbnail + '\'' +
+                ", thumbnail_landscape='" + thumbnail_landscape + '\'' +
                 '}';
     }
 
@@ -192,12 +193,12 @@ public class Movie implements Serializable {
         this.date = date;
     }
 
-    public List<String> getActor() {
-        return actor;
+    public List<Actor> getActors() {
+        return actors;
     }
 
-    public void setActor(List<String> actor) {
-        this.actor = actor;
+    public void setActors(List<Actor> actors) {
+        this.actors = actors;
     }
 
     public List<String> getDirector() {
@@ -237,7 +238,7 @@ public class Movie implements Serializable {
         this.suggestions = suggestions;
     }
 
-    public void addSuggestions(Movie suggestion) {
+    public void addSuggestion(Movie suggestion) {
         if (this.suggestions == null) this.suggestions = new ArrayList<>();
         this.suggestions.add(suggestion);
     }
@@ -264,5 +265,10 @@ public class Movie implements Serializable {
 
     public void setThumbnail_landscape(String thumbnail_landscape) {
         this.thumbnail_landscape = thumbnail_landscape;
+    }
+
+    public void addActor(Actor actor){
+        if (this.actors == null) this.actors = new ArrayList<>();
+        this.actors.add(actor);
     }
 }

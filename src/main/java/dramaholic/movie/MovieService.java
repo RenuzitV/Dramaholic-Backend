@@ -1,9 +1,8 @@
 package dramaholic.movie;
 
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
-import dramaholic.customer.Customer;
+import dramaholic.actor.Actor;
+import dramaholic.actor.ActorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,20 +11,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
 @Transactional
 public class MovieService {
     private final MovieRepository movieRepository;
+    private final ActorRepository actorRepository;
     private final MovieScraper movieScraper;
     private final QMovie movie;
 
     @Autowired
-    MovieService(MovieRepository movieRepository, MovieScraper movieScraper){
+    MovieService(MovieRepository movieRepository, MovieScraper movieScraper, ActorRepository actorRepository){
         this.movieRepository = movieRepository;
         this.movieScraper = movieScraper;
+        this.actorRepository = actorRepository;
         this.movie = QMovie.movie;
     }
 
@@ -49,10 +49,21 @@ public class MovieService {
         movies.addAll(movieScraper.scrapeMovies(ko, "ko"));
         movies.add(movieScraper.makeMovieFromID("99966"));
 
-        movieScraper.unique(movies);
+        movieScraper.uniqueMovie(movies);
 
-        movieRepository.deleteAll();
+        List<Actor> actorSet = new ArrayList<>();
+        movies.forEach(element -> actorSet.addAll(element.getActors()));
+
+        movieScraper.uniqueActor(actorSet);
+
+        System.out.println(actorSet.size() + " actors");
+        actorRepository.saveAll(actorSet);
+
+        System.out.println("saved");
+        System.out.println(movies.size() + " movies");
+
         movieRepository.saveAll(movies);
+        System.out.println("done");
     }
 
     public Page<Movie> find(String title, Double rateGT, Double rateLTE, Long episodesGT, Long episodesLTE, String[] country, Pageable pagingSort) {
