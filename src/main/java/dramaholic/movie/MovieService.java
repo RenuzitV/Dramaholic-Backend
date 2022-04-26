@@ -11,6 +11,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -57,7 +59,7 @@ public class MovieService {
         BooleanExpression movieRatingBetween = movie.rating.between(rateGT, rateLTE);
         BooleanExpression movieEpisodesBetween = movie.episodes.between(episodesGT, episodesLTE);
         BooleanExpression movieTitleLike = movie.title.likeIgnoreCase("%"+title+"%");
-        BooleanExpression movieCountryExp = Expressions.asBoolean(true);
+        BooleanExpression movieCountryExp = null;
         if (country.length > 0) movieCountryExp = movie.country.in(country);
 
         return movieRepository.findAll(movieRatingBetween.and(movieEpisodesBetween).and(movieTitleLike).and(movieCountryExp), pagingSort);
