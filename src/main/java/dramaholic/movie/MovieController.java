@@ -88,7 +88,8 @@ public class MovieController {
             @RequestParam(defaultValue = "10") Double rateLTE,
             @RequestParam(defaultValue = "0") Long episodesGT,
             @RequestParam(defaultValue = "50") Long episodesLTE,
-            @RequestParam(defaultValue = "") String[] country){
+            @RequestParam(defaultValue = "") String[] country,
+            @RequestParam(defaultValue = "") String[] genre){
         try {
             List<Order> orders = new ArrayList<>();
             for (int i = 0; i < sort.length; i += 2){
@@ -101,7 +102,7 @@ public class MovieController {
             }
             Pageable pagingSort = PageRequest.of(page, size, Sort.by(orders));
 
-            Page<Movie> moviePage = movieService.find(title, rateGT, rateLTE, episodesGT, episodesLTE, country, pagingSort);
+            Page<Movie> moviePage = movieService.find(title, rateGT, rateLTE, episodesGT, episodesLTE, country, genre, pagingSort);
 
             HttpHeaders responseHeaders = new HttpHeaders();
             List<MediaType> medias = new ArrayList<>();

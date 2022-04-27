@@ -66,14 +66,16 @@ public class MovieService {
         System.out.println("done");
     }
 
-    public Page<Movie> find(String title, Double rateGT, Double rateLTE, Long episodesGT, Long episodesLTE, String[] country, Pageable pagingSort) {
+    public Page<Movie> find(String title, Double rateGT, Double rateLTE, Long episodesGT, Long episodesLTE, String[] country, String[] genre, Pageable pagingSort) {
         BooleanExpression movieRatingBetween = movie.rating.between(rateGT, rateLTE);
         BooleanExpression movieEpisodesBetween = movie.episodes.between(episodesGT, episodesLTE);
         BooleanExpression movieTitleLike = movie.title.likeIgnoreCase("%"+title+"%");
         BooleanExpression movieCountryExp = null;
         if (country.length > 0) movieCountryExp = movie.country.in(country);
+        BooleanExpression movieGenreExp = null;
+        if (country.length > 0) movieGenreExp = movie.country.in(genre);
 
-        return movieRepository.findAll(movieRatingBetween.and(movieEpisodesBetween).and(movieTitleLike).and(movieCountryExp), pagingSort);
+        return movieRepository.findAll(movieRatingBetween.and(movieEpisodesBetween).and(movieTitleLike).and(movieCountryExp).and(movieGenreExp), pagingSort);
     }
 
     public Movie findById(Long id){
