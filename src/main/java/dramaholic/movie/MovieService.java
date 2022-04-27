@@ -74,7 +74,7 @@ public class MovieService {
         booleanBuilder.and(movie.episodes.between(episodesGT, episodesLTE));
         booleanBuilder.and(movie.title.likeIgnoreCase("%"+title+"%"));
         if (country.length > 0) booleanBuilder.and(movie.country.in(country));
-        booleanBuilder.and(movie.genres.any().in(genre));
+        if (genre.length > 0) booleanBuilder.and(movie.genres.any().in(genre));
 
         return movieRepository.findAll(booleanBuilder, pagingSort);
     }
