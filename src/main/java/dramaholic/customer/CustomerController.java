@@ -105,6 +105,7 @@ public class CustomerController {
         if (body.get("dob") != null) customer.setDob(LocalDate.parse(body.get("dob"), DateTimeFormatter.ofPattern("dd-MM-yyyy")));
         if (body.get("email") != null) customer.setEmail(body.get("email"));
         if (body.get("name") != null) customer.setName(body.get("name"));
+        if (body.get("password") != null) customer.setPassword(body.get("password"));
         return new ResponseEntity<>(customerService.updateCustomer(customer), HttpStatus.OK);
     }
 
