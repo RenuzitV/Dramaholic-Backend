@@ -111,7 +111,8 @@ public class CustomerController {
     @PostMapping(value = "/login", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Customer> login(@RequestBody HashMap<String, String> body){
         boolean res = customerService.checkCredentials(body);
-        return new ResponseEntity<>(getCustomerFromService(body), HttpStatus.OK);
+        if (res) return new ResponseEntity<>(getCustomerFromService(body), HttpStatus.OK);
+        else return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
     }
 
     @GetMapping(value = "/watchlater", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
