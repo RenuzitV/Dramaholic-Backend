@@ -73,7 +73,7 @@ public class MovieService {
         BooleanExpression movieCountryExp = null;
         if (country.length > 0) movieCountryExp = movie.country.in(country);
         BooleanExpression movieGenreExp = null;
-        if (country.length > 0) movieGenreExp = movie.country.in(genre);
+        if (genre.length > 0) movieGenreExp = movie.country.in(genre);
 
         return movieRepository.findAll(movieRatingBetween.and(movieEpisodesBetween).and(movieTitleLike).and(movieCountryExp).and(movieGenreExp), pagingSort);
     }
