@@ -1,5 +1,6 @@
 package dramaholic.movie;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import dramaholic.actor.Actor;
 import dramaholic.actor.ActorRepository;
@@ -67,15 +68,16 @@ public class MovieService {
     }
 
     public Page<Movie> find(String title, Double rateGT, Double rateLTE, Long episodesGT, Long episodesLTE, String[] country, String[] genre, Pageable pagingSort) {
-        BooleanExpression movieRatingBetween = movie.rating.between(rateGT, rateLTE);
-        BooleanExpression movieEpisodesBetween = movie.episodes.between(episodesGT, episodesLTE);
-        BooleanExpression movieTitleLike = movie.title.likeIgnoreCase("%"+title+"%");
-        BooleanExpression movieCountryExp = null;
-        if (country.length > 0) movieCountryExp = movie.country.in(country);
-        BooleanExpression movieGenreExp = null;
-        if (genre.length > 0) movieGenreExp = movie.country.in(genre);
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(movie.rating.between(rateGT, rateLTE));
+        booleanBuilder.and(movie.episodes.between(episodesGT, episodesLTE));
+        booleanBuilder.and(movie.title.likeIgnoreCase("%"+title+"%"));
+        booleanBuilder.and(movie.country.in(country));
+        for (String g : genre){
+            booleanBuilder.and(movie.genres.contains(g));
+        }
 
-        return movieRepository.findAll(movieRatingBetween.and(movieEpisodesBetween).and(movieTitleLike).and(movieCountryExp).and(movieGenreExp), pagingSort);
+        return movieRepository.findAll(booleanBuilder, pagingSort);
     }
 
     public Movie findById(Long id){
