@@ -72,7 +72,7 @@ public class MovieService {
         booleanBuilder.and(movie.rating.between(rateGT, rateLTE));
         booleanBuilder.and(movie.episodes.between(episodesGT, episodesLTE));
         booleanBuilder.and(movie.title.likeIgnoreCase("%"+title+"%"));
-        booleanBuilder.and(movie.country.in(country));
+        if (country.length > 0) booleanBuilder.and(movie.country.in(country));
         for (String g : genre){
             booleanBuilder.and(movie.genres.contains(g));
         }
