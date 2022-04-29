@@ -43,7 +43,7 @@ public class CustomerController {
     }
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<String> addCustomer(@ModelAttribute Customer customer) {
+    public ResponseEntity<String> addCustomer(@RequestBody Customer customer) {
         if (!customerService.isValid(customer)) return new ResponseEntity<>("not valid", HttpStatus.BAD_REQUEST);
         if (customerService.exists(customer)) return new ResponseEntity<>("existed username", HttpStatus.BAD_REQUEST);
         customerService.addCustomer(customer);
