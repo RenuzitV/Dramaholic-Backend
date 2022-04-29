@@ -11,8 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/movies")
@@ -32,12 +34,30 @@ public class MovieController {
     }
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<String> addCustomer(@ModelAttribute Movie movie) {
+    public ResponseEntity<String> addMovie(@RequestBody Movie movie) {
         if (movieService.isValid(movie)) {
             movieService.addMovie(movie);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }
         return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).build();
+    }
+
+    @PutMapping(value ="/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> updateMovie(@PathVariable Long id, @RequestBody Movie movie){
+        Optional<Movie> optionalMovie = movieService.getMovie(id);
+        if (optionalMovie.isEmpty()) return new ResponseEntity<>("not found", HttpStatus.NOT_FOUND);
+        movie.setDbID(optionalMovie.get().getDbID());
+//        Movie movie = optionalMovie.get();
+//        if (body.get("date") != null) movie.setDate(LocalDate.parse(body.get("date"), DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+//        if (body.get("thumbnail") != null) movie.setThumbnail(body.get("thumbnail"));
+//        if (body.get("country") != null) movie.setCountry(body.get("country"));
+//        if (body.get("originalTitle") != null) movie.setOriginalTitle(body.get("originalTitle"));
+//        if (body.get("rating") != null) movie.setRating(Double.valueOf(body.get("rating")));
+//        if (body.get("episodes") != null) movie.setEpisodes(Long.valueOf(body.get("episodes")));
+//        if (body.get("thumbnail_landscape") != null) movie.setThumbnail_landscape(body.get("thumbnail_landscape"));
+//        if (body.get("href") != null) movie.setHref(body.get("href"));
+//        if (body.get("href") != null) movie.set(body.get("dbID"));
+        return new ResponseEntity<>(movieService.updateMovie(movie), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

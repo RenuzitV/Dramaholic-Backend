@@ -1,7 +1,6 @@
 package dramaholic.movie;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import dramaholic.actor.Actor;
 import dramaholic.actor.ActorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -31,10 +30,6 @@ public class MovieService {
         this.movie = QMovie.movie;
     }
 
-    public boolean isValid(Movie movie){
-        return true;
-    }
-
     // Add new Customer
     public String addMovie(Movie movie) {
         try {
@@ -43,6 +38,10 @@ public class MovieService {
         } catch(Exception e) {
             return "failed";
         }
+    }
+
+    public boolean isValid(Movie m){
+        return true;
     }
 
     @Async
@@ -87,8 +86,8 @@ public class MovieService {
         return movieRepository.deleteByDbID(id);
     }
 
-    public Movie getMovie(Long dbID) {
-        return movieRepository.findFirstByDbID(dbID);
+    public Optional<Movie> getMovie(Long dbID) {
+        return movieRepository.findById(dbID);
     }
 
     public Movie addMovie(Long dbID) {
@@ -97,5 +96,15 @@ public class MovieService {
 
     public boolean exists(Long dbID) {
         return movieRepository.existsById(dbID);
+    }
+
+    // Update a Customer
+    public String updateMovie(Movie s) {
+        try {
+            movieRepository.save(s);
+            return "Updated";
+        }catch(Exception e) {
+            return "Failed";
+        }
     }
 }

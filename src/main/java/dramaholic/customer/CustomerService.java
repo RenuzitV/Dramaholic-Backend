@@ -103,7 +103,7 @@ public class CustomerService {
     }
 
     public boolean exists(Customer customer) {
-        return customerRepository.existsCustomerByUsername(customer.getUsername());
+        return customerRepository.existsCustomerByUsernameIgnoreCase(customer.getUsername());
     }
 
     public void addWatchlater(HashMap<String, String> body) {

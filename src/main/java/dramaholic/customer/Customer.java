@@ -32,6 +32,8 @@ public class Customer implements Serializable {
     private List<Movie> watchLater;
     @ManyToMany(fetch = FetchType.LAZY)
     private List<Movie> history;
+    @Column()
+    private Boolean admin;
 
     public Customer(String username, String password) {
         this.username = username;
@@ -43,6 +45,7 @@ public class Customer implements Serializable {
         if (watchLater == null) watchLater = new ArrayList<>();
         if (history == null) history = new ArrayList<>();
         if (email == null) email = "";
+        if (admin == null) admin = false;
     }
 
     public List<Movie> getWatchLater() {
@@ -94,6 +97,7 @@ public class Customer implements Serializable {
                 ", email='" + email + '\'' +
                 ", watchLater='" + watchLater + '\'' +
                 ", history='" + history + '\'' +
+                ", admin='" + admin + '\'' +
                 '}';
     }
 

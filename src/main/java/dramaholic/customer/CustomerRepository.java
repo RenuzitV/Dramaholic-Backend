@@ -12,7 +12,7 @@ public interface CustomerRepository extends PagingAndSortingRepository<Customer,
     Customer getCustomerByUsername(String username);
     Customer getCustomerById(Long id);
 
-    Boolean existsCustomerByUsername(String username);
+    Boolean existsCustomerByUsernameIgnoreCase(String username);
     Boolean existsCustomerByUsernameAndPassword(String username, String password);
 
     Long deleteCustomerByUsernameEquals(String username);

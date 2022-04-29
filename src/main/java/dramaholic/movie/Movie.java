@@ -42,7 +42,7 @@ public class Movie implements Serializable {
     private List<String> director;
     @ElementCollection
     private List<String> tags;
-    @Column(nullable = false)
+    @Column
     private String thumbnail;
     @Column()
     private String thumbnail_portrait;
@@ -60,6 +60,10 @@ public class Movie implements Serializable {
         if (duration == null) duration = .0;
         if (episodes == null) episodes = 0L;
         if (date == null) date = LocalDate.now();
+        if (title == null) title = "";
+        if (originalTitle == null) originalTitle = "";
+        if (href == null) href = "";
+        if (thumbnail == null) thumbnail = "";
     }
 
     @Override
