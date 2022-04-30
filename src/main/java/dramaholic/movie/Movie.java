@@ -36,7 +36,7 @@ public class Movie implements Serializable {
     private boolean adult;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate date;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Actor> actors;
     @ElementCollection
     private List<String> director;
