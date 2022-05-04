@@ -50,14 +50,6 @@ public class Customer implements Serializable {
         if (admin == null) admin = false;
     }
 
-    public List<Movie> getWatchLater() {
-        return watchLater;
-    }
-
-    public void setWatchLater(List<Movie> watchLater) {
-        this.watchLater = watchLater;
-    }
-
     public Customer(Long id, String name, LocalDate dob, String username, String password, String email, List<Movie> watchLater, List<Movie> history) {
         this.id = id;
         this.name = name;
@@ -174,5 +166,21 @@ public class Customer implements Serializable {
 
     public void removeHistory(Movie movie) {
         watchLater.remove(movie);
+    }
+
+    public Boolean getAdmin() {
+        return admin;
+    }
+
+    public List<Movie> getWatchLater() {
+        return watchLater;
+    }
+
+    public void setWatchLater(List<Movie> watchLater) {
+        this.watchLater = watchLater;
+    }
+
+    public void setAdmin(Boolean admin) {
+        this.admin = admin;
     }
 }
