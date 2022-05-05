@@ -28,10 +28,10 @@ public class Customer implements Serializable {
     private String password;
     private String email;
     @ManyToMany(fetch = FetchType.LAZY)
-    @JsonBackReference
+    @JsonBackReference(value="watchLater")
     private List<Movie> watchLater;
     @ManyToMany(fetch = FetchType.LAZY)
-    @JsonBackReference
+    @JsonBackReference(value="history")
     private List<Movie> history;
     @Column()
     private Boolean admin;
