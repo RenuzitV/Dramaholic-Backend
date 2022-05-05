@@ -106,6 +106,8 @@ public class CustomerController {
         if (body.get("email") != null) customer.setEmail(body.get("email"));
         if (body.get("name") != null) customer.setName(body.get("name"));
         if (body.get("password") != null) customer.setPassword(body.get("password"));
+        if (body.get("admin") != null) customer.setAdmin(Boolean.valueOf(body.get("admin")));
+
         return new ResponseEntity<>(customerService.updateCustomer(customer), HttpStatus.OK);
     }
 
