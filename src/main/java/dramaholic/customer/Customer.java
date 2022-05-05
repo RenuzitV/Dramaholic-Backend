@@ -21,7 +21,6 @@ public class Customer implements Serializable {
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate dob;
     @Column(nullable = false, unique = true)
     private String username;
