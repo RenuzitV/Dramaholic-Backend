@@ -102,7 +102,7 @@ public class CustomerController {
         Optional<Customer> optionalCustomer = customerService.getCustomer(id);
         if (optionalCustomer.isEmpty()) return new ResponseEntity<>("not found", HttpStatus.NOT_FOUND);
         Customer customer = optionalCustomer.get();
-        if (body.get("dob") != null) customer.setDob(LocalDate.parse(body.get("dob"), DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+        if (body.get("dob") != null) customer.setDob(LocalDate.parse(body.get("dob"), DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         if (body.get("email") != null) customer.setEmail(body.get("email"));
         if (body.get("name") != null) customer.setName(body.get("name"));
         if (body.get("password") != null) customer.setPassword(body.get("password"));
