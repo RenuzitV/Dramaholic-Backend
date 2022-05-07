@@ -1,11 +1,7 @@
 package dramaholic.movie;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
-import dramaholic.actor.Actor;
-import dramaholic.actor.ActorRepository;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +9,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,15 +16,13 @@ import java.util.Optional;
 @Transactional
 public class MovieService {
     private final MovieRepository movieRepository;
-    private final ActorRepository actorRepository;
     private final MovieScraper movieScraper;
     private final QMovie movie;
 
     @Autowired
-    MovieService(MovieRepository movieRepository, MovieScraper movieScraper, ActorRepository actorRepository){
+    MovieService(MovieRepository movieRepository, MovieScraper movieScraper){
         this.movieRepository = movieRepository;
         this.movieScraper = movieScraper;
-        this.actorRepository = actorRepository;
         this.movie = QMovie.movie;
     }
 
@@ -55,17 +48,16 @@ public class MovieService {
 
         movieScraper.uniqueMovie(movies);
 
-        List<Actor> actorSet = new ArrayList<>();
-        movies.forEach(element -> actorSet.addAll(element.getActors()));
+//        List<Actor> actorSet = new ArrayList<>();
+//        movies.forEach(element -> actorSet.addAll(element.getActors()));
+//
+//        movieScraper.uniqueActor(actorSet);
+//
+//        System.out.println(actorSet.size() + " actors");
+//        actorRepository.saveAll(actorSet);
+//        System.out.println("saved");
 
-        movieScraper.uniqueActor(actorSet);
-
-        System.out.println(actorSet.size() + " actors");
-        actorRepository.saveAll(actorSet);
-
-        System.out.println("saved");
         System.out.println(movies.size() + " movies");
-
         movieRepository.saveAll(movies);
         System.out.println("done");
     }

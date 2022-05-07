@@ -1,15 +1,15 @@
 package dramaholic.customer;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import dramaholic.movie.Movie;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @EnableAutoConfiguration

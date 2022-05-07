@@ -3,7 +3,6 @@ package dramaholic.movie;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
 
-import javax.persistence.Entity;
 import java.io.Serializable;
 
 public class MovieSequenceGen extends SequenceStyleGenerator{
