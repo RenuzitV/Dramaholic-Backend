@@ -1,4 +1,4 @@
-package  dramaholic.CORS;
+package  dramaholic.WebSecurityConfig;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

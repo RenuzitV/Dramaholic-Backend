@@ -107,7 +107,7 @@ public class MovieController {
             @RequestParam(defaultValue = "0") Double rateGT,
             @RequestParam(defaultValue = "10") Double rateLTE,
             @RequestParam(defaultValue = "0") Long episodesGT,
-            @RequestParam(defaultValue = "50") Long episodesLTE,
+            @RequestParam(defaultValue = "10000") Long episodesLTE,
             @RequestParam(defaultValue = "") String[] country,
             @RequestParam(defaultValue = "") String[] genre){
         try {
