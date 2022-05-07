@@ -1,8 +1,11 @@
 package dramaholic.movie;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import dramaholic.actor.Actor;
 import dramaholic.actor.ActorRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -71,7 +74,10 @@ public class MovieService {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         booleanBuilder.and(movie.rating.between(rateGT, rateLTE));
         booleanBuilder.and(movie.episodes.between(episodesGT, episodesLTE));
-        booleanBuilder.and(movie.title.likeIgnoreCase("%"+title+"%"));
+        booleanBuilder.and(
+                Expressions.stringTemplate("upper(translate({0}, 'âàãáÁÂÀÃéêÉÊíÍóôõÓÔÕüúÜÚÇç', 'AAAAAAAAEEEEIIOOOOOOUUUUCC'))", movie.title).likeIgnoreCase("%"+title+"%").or(
+                Expressions.stringTemplate("upper(translate({0}, 'âàãáÁÂÀÃéêÉÊíÍóôõÓÔÕüúÜÚÇç', 'AAAAAAAAEEEEIIOOOOOOUUUUCC'))", movie.originalTitle).likeIgnoreCase("%"+title+"%"))
+        );
         if (country.length > 0) booleanBuilder.and(movie.country.in(country));
         if (genre.length > 0) booleanBuilder.and(movie.genres.any().in(genre));
 
