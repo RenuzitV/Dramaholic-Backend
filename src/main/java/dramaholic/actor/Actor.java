@@ -34,7 +34,7 @@ public class Actor implements Serializable {
     @Override
     public String toString() {
         return "Actor{" +
-                ", id='" + id + '\'' +
+                "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", image='" + image + '\'' +
                 ", character='" + character + '\'' +
