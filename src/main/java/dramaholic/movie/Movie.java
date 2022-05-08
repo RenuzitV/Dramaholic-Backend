@@ -1,6 +1,5 @@
 package dramaholic.movie;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import dramaholic.actor.Actor;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -9,7 +8,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @EnableAutoConfiguration
@@ -36,7 +37,7 @@ public class Movie implements Serializable {
     private boolean adult;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate date;
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = CascadeType.PERSIST) 
     private List<Actor> actors;
     @ElementCollection
     private List<String> director;
