@@ -192,10 +192,10 @@ public class MovieScraper{
                         element.getAsJsonObject().get("character").getAsString());
                 if (actor.getName().length() > 50 || actor.getCharacter().length() > 50) continue;
                 movie.addActor(actor);
-            }catch (Exception ignored){
+            } catch (Exception ignored){
 
             }
-//            if (movie.getActors().size() >= 3) break;
+            if (movie.getActors().size() >= 5) break;
         }
 
 
