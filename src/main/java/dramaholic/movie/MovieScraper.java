@@ -55,7 +55,7 @@ public class MovieScraper{
         }
     }
 
-    public List<Movie> scrapeMovies(int numMovies, String language){
+    public List<Movie> scrapeMovies(int numMovies, String language, String genre){
         List<Movie> movies = new ArrayList<>();
         int pagecount = 1;
         while (movies.size() < numMovies) {
@@ -64,6 +64,7 @@ public class MovieScraper{
             param.put("sort_by", "popularity.desc");
             param.put("vote_average.gte", "5");
             if (language != null) param.put("with_original_language", language);
+            if (genre != null) param.put("with_genres", genre);
             param.put("page", String.valueOf(pagecount));
 
             ResponseEntity<String> response = getResponse("https://api.themoviedb.org/3/discover/tv", param);
@@ -168,7 +169,7 @@ public class MovieScraper{
         //ORIGINAL LANGUAGE
         movie.setCountry(json.get("original_language").getAsString());
 
-        //THUMBNAIL, DEPRECATED, KEPT FOR BACKWARDS COMPATIBILITY
+        //THUMBNAIL
         movie.setThumbnail("https://image.tmdb.org/t/p/original" + json.get("poster_path").getAsString());
 
         //LANDSCAPE THUMBNAIL

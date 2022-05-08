@@ -1,6 +1,5 @@
 package dramaholic.movie;
 
-import com.mysema.commons.lang.Pair;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import dramaholic.actor.Actor;
@@ -12,10 +11,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -24,6 +20,7 @@ public class MovieService {
     private final MovieScraper movieScraper;
     private final ActorRepository actorRepository;
     private final QMovie movie;
+    private final List<String> genres;
 
     @Autowired
     MovieService(MovieRepository movieRepository, MovieScraper movieScraper, ActorRepository actorRepository){
@@ -31,6 +28,24 @@ public class MovieService {
         this.movieScraper = movieScraper;
         this.actorRepository = actorRepository;
         this.movie = QMovie.movie;
+        genres = new ArrayList<>(Arrays.asList(
+                "Action & Adventure",
+                "Animation",
+                "Comedy",
+                "Crime",
+                "Documentary",
+                "Drama",
+                "Family",
+                "Kids",
+                "Mystery",
+                "News",
+                "Reality",
+                "Sci-Fi & Fantasy",
+                "Soap",
+                "Talk",
+                "War & Politics",
+                "Western"
+        ));
     }
 
     // Add new Customer
@@ -52,9 +67,12 @@ public class MovieService {
         List<Movie> movies = new ArrayList<>();
         countries.forEach((country, count) -> {
             if (country.equals("g")) country = null;
-            movies.addAll(movieScraper.scrapeMovies(Integer.parseInt(count), country));
+            movies.addAll(movieScraper.scrapeMovies(Integer.parseInt(count), country, null));
         });
         movies.add(movieScraper.makeMovieFromID("99966"));
+        for (String genre : genres){
+            movies.addAll(movieScraper.scrapeMovies(20, null, genre));
+        }
 
         movieScraper.uniqueMovie(movies);
 
