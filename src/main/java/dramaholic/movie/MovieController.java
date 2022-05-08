@@ -136,7 +136,7 @@ public class MovieController {
 
     //future me please dont add more than 120 movies
     @PostMapping("/loadDatabase")
-    public String reloadDatabase(@RequestParam(defaultValue = "50")HashMap<String, Integer> countries){
+    public String reloadDatabase(@RequestParam(defaultValue = "50") HashMap<String, String> countries){
         movieService.reloadDatabase(countries);
         String[] response = {""};
         countries.forEach((country, count) ->{

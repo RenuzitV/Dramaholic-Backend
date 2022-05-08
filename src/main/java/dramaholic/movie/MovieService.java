@@ -44,11 +44,11 @@ public class MovieService {
     }
 
     @Async
-    public void reloadDatabase(HashMap<String, Integer> countries){
+    public void reloadDatabase(HashMap<String, String> countries){
         List<Movie> movies = new ArrayList<>();
         countries.forEach((country, count) -> {
             if (country.equals("g")) country = null;
-            movies.addAll(movieScraper.scrapeMovies(count, country));
+            movies.addAll(movieScraper.scrapeMovies(Integer.parseInt(count), country));
         });
         movies.add(movieScraper.makeMovieFromID("99966"));
 
