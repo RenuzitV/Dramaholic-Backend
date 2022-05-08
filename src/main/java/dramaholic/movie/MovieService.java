@@ -58,14 +58,14 @@ public class MovieService {
 
         movieScraper.uniqueMovie(movies);
 
-        List<Actor> actorSet = new ArrayList<>();
-        movies.forEach(element -> actorSet.addAll(element.getActors()));
-
-        movieScraper.uniqueActor(actorSet);
-
-        System.out.println(actorSet.size() + " actors");
-        actorRepository.saveAll(actorSet);
-        System.out.println("saved");
+//        List<Actor> actorSet = new ArrayList<>();
+//        movies.forEach(element -> actorSet.addAll(element.getActors()));
+//
+//        movieScraper.uniqueActor(actorSet);
+//
+//        System.out.println(actorSet.size() + " actors");
+//        actorRepository.saveAll(actorSet);
+//        System.out.println("saved");
 
         System.out.println(movies.size() + " movies");
         movieRepository.saveAll(movies);
