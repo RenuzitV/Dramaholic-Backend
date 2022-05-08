@@ -78,7 +78,12 @@ public class MovieScraper{
 
             for (JsonElement jsonElement : jsonArray) {
                 String id = jsonElement.getAsJsonObject().get("id").getAsString();
-                Movie movie = makeMovieFromID(id);
+                Movie movie = null;
+                try{
+                    movie = makeMovieFromID(id);
+                } catch (Exception ignored){
+
+                }
                 if (movie == null) continue;
                 movies.add(movie);
                 System.out.println(movies.get(movies.size() - 1));
