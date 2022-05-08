@@ -1,5 +1,6 @@
 package dramaholic.movie;
 
+import com.mysema.commons.lang.Pair;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,9 +44,11 @@ public class MovieService {
     }
 
     @Async
-    public void reloadDatabase(int g, int ko){
-        List<Movie> movies = movieScraper.scrapeMovies(g, "");
-        movies.addAll(movieScraper.scrapeMovies(ko, "ko"));
+    public void reloadDatabase(HashMap<String, Integer> countries){
+        List<Movie> movies = new ArrayList<>();
+        countries.forEach((country, count) -> {
+            movies.addAll(movieScraper.scrapeMovies(count, country));
+        });
         movies.add(movieScraper.makeMovieFromID("99966"));
 
         movieScraper.uniqueMovie(movies);

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,8 +37,7 @@ public class MovieController {
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<String> addMovie(@RequestBody Movie movie) {
         if (movieService.isValid(movie)) {
-            movieService.addMovie(movie);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            return new ResponseEntity<>(movieService.addMovie(movie), HttpStatus.CREATED);
         }
         return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).build();
     }
@@ -136,11 +136,14 @@ public class MovieController {
 
     //future me please dont add more than 120 movies
     @PostMapping("/loadDatabase")
-    public String reloadDatabase(
-            @RequestParam(defaultValue = "50") int g,
-            @RequestParam(defaultValue = "50") int ko){
-        movieService.reloadDatabase(g, ko);
-        return g + " general " + ko + " ko";
+    public String reloadDatabase(@RequestParam(defaultValue = "50")HashMap<String, Integer> countries){
+        movieService.reloadDatabase(countries);
+        String[] response = {""};
+        countries.forEach((country, count) ->{
+            response[0] += count + " " + country + ",";
+        });
+        if (response[0].equals("")) return "no param found, deleting database";
+        return response[0];
     }
     //future me please dont add more than 120 movies
     @PostMapping("/loadDatabase/{id}")
