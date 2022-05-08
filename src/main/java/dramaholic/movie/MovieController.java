@@ -44,9 +44,8 @@ public class MovieController {
 
     @PutMapping(value ="/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<String> updateMovie(@PathVariable Long id, @RequestBody Movie movie){
-        Optional<Movie> optionalMovie = movieService.getMovie(id);
-        if (optionalMovie.isEmpty()) return new ResponseEntity<>("not found", HttpStatus.NOT_FOUND);
-        movie.setDbID(optionalMovie.get().getDbID());
+        boolean ok = movieService.exists(id);
+        if (ok) return new ResponseEntity<>("movie does not exist", HttpStatus.NOT_FOUND);
 //        Movie movie = optionalMovie.get();
 //        if (body.get("date") != null) movie.setDate(LocalDate.parse(body.get("date"), DateTimeFormatter.ofPattern("dd-MM-yyyy")));
 //        if (body.get("thumbnail") != null) movie.setThumbnail(body.get("thumbnail"));
@@ -57,7 +56,7 @@ public class MovieController {
 //        if (body.get("thumbnail_landscape") != null) movie.setThumbnail_landscape(body.get("thumbnail_landscape"));
 //        if (body.get("href") != null) movie.setHref(body.get("href"));
 //        if (body.get("href") != null) movie.set(body.get("dbID"));
-        return new ResponseEntity<>(movieService.updateMovie(movie), HttpStatus.OK);
+        return new ResponseEntity<>(movieService.updateMovie(id, movie), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

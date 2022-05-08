@@ -98,23 +98,16 @@ public class CustomerController {
     }
 
     @PutMapping(value ="/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<String> updateCustomer(@PathVariable Long id, @RequestBody HashMap<String, String> body){
-        Optional<Customer> optionalCustomer = customerService.getCustomer(id);
-        if (optionalCustomer.isEmpty()) return new ResponseEntity<>("not found", HttpStatus.NOT_FOUND);
-        Customer customer = optionalCustomer.get();
-        if (body.get("dob") != null) customer.setDob(LocalDate.parse(body.get("dob"), DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        if (body.get("email") != null) customer.setEmail(body.get("email"));
-        if (body.get("name") != null) customer.setName(body.get("name"));
-        if (body.get("password") != null) customer.setPassword(body.get("password"));
-        if (body.get("admin") != null) customer.setAdmin(Boolean.valueOf(body.get("admin")));
-
-        return new ResponseEntity<>(customerService.updateCustomer(customer), HttpStatus.OK);
+    public ResponseEntity<String> updateCustomer(@PathVariable Long id, @RequestBody Customer customer){
+        boolean ok = customerService.exists(id);
+        if (ok) return new ResponseEntity<>("not found", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(customerService.updateCustomer(id, customer), HttpStatus.OK);
     }
 
     @PostMapping(value = "/login", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Customer> login(@RequestBody HashMap<String, String> body){
-        boolean res = customerService.checkCredentials(body);
-        if (res) return new ResponseEntity<>(getCustomerFromService(body), HttpStatus.OK);
+    public ResponseEntity<Customer> login(@RequestBody Customer customer){
+        boolean res = customerService.checkCredentials(customer);
+        if (res) return new ResponseEntity<>(customerService.getCustomer(customer), HttpStatus.OK);
         else return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
     }
 

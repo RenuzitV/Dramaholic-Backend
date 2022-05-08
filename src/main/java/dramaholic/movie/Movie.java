@@ -1,6 +1,7 @@
 package dramaholic.movie;
 
 import dramaholic.actor.Actor;
+import dramaholic.comment.Comment;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -51,6 +52,9 @@ public class Movie implements Serializable {
     private String thumbnail_landscape;
     @ManyToMany(fetch = FetchType.LAZY)
     private List<Movie> suggestions;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Comment> comments;
+
 
     public Movie() {
     }
@@ -268,6 +272,19 @@ public class Movie implements Serializable {
 
     public void setThumbnail_landscape(String thumbnail_landscape) {
         this.thumbnail_landscape = thumbnail_landscape;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public void addComment(Comment comment){
+        if (this.comments == null) this.comments = new ArrayList<>();
+        this.comments.add(comment);
     }
 
     public void addActor(Actor actor){

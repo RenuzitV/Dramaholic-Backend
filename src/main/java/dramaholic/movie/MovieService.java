@@ -133,4 +133,15 @@ public class MovieService {
             return "Failed";
         }
     }
+
+    // Update a Customer
+    public String updateMovie(Long id, Movie s) {
+        try {
+            s.setDbID(id);
+            movieRepository.save(s);
+            return "Updated";
+        }catch(Exception e) {
+            return "Failed";
+        }
+    }
 }

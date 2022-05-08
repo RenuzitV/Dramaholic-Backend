@@ -68,12 +68,12 @@ public class Customer implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Customer customer = (Customer) o;
-        return id.equals(customer.id) && name.equals(customer.name) && dob.equals(customer.dob) && username.equals(customer.username) && password.equals(customer.password) && Objects.equals(email, customer.email) && Objects.equals(watchLater, customer.watchLater) && Objects.equals(history, customer.history);
+        return id.equals(customer.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, dob, username, password, email, watchLater, history);
+        return Objects.hash(id);
     }
 
     public boolean checkCredentials(Customer customer){

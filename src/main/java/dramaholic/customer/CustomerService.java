@@ -46,6 +46,17 @@ public class CustomerService {
         }
     }
 
+    // Update a Customer
+    public String updateCustomer(Long id, Customer s) {
+        try {
+            s.setId(id);
+            customerRepository.save(s);
+            return "Updated";
+        }catch(Exception e) {
+            return "Failed";
+        }
+    }
+
     // Get all Customers
     public Iterable<Customer> getAllCustomer(){
         return customerRepository.findAll();
@@ -58,6 +69,10 @@ public class CustomerService {
     // Get single Customer by Id
     public Optional<Customer> getCustomer(Long id) {
         return customerRepository.findById(id);
+    }
+
+    public boolean exists(Long id){
+        return customerRepository.existsById(id);
     }
 
     // Delete a Customer
@@ -82,12 +97,13 @@ public class CustomerService {
         return found.checkCredentials(customer);
     }
 
-
     public boolean checkCredentials(HashMap<String, String> body) {
+        if (body.get("username") == null || body.get("password") == null) return false;
         return customerRepository.existsCustomerByUsernameAndPassword(body.get("username"), body.get("password"));
     }
 
     public Customer getCustomer(Customer customer){
+        if (customer.getUsername() == null || customer.getPassword() == null) return null;
         return customerRepository.getCustomerByUsernameAndPassword(customer.getUsername(), customer.getPassword());
     }
 
@@ -128,5 +144,10 @@ public class CustomerService {
         Movie movie = movieRepository.findFirstByDbID(Long.parseLong(body.get("dbID")));
         customer.removeWatchlater(movie);
         customerRepository.save(customer);
+    }
+
+    public Customer getCustomerFromCredentials(Customer customer) {
+        if (customer == null) return null;
+        return customerRepository.getCustomerByUsernameAndPassword(customer.getUsername(), customer.getPassword());
     }
 }
