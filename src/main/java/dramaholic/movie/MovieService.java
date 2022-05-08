@@ -3,6 +3,8 @@ package dramaholic.movie;
 import com.mysema.commons.lang.Pair;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.Expressions;
+import dramaholic.actor.Actor;
+import dramaholic.actor.ActorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,12 +22,14 @@ import java.util.Optional;
 public class MovieService {
     private final MovieRepository movieRepository;
     private final MovieScraper movieScraper;
+    private final ActorRepository actorRepository;
     private final QMovie movie;
 
     @Autowired
-    MovieService(MovieRepository movieRepository, MovieScraper movieScraper){
+    MovieService(MovieRepository movieRepository, MovieScraper movieScraper, ActorRepository actorRepository){
         this.movieRepository = movieRepository;
         this.movieScraper = movieScraper;
+        this.actorRepository = actorRepository;
         this.movie = QMovie.movie;
     }
 
@@ -54,14 +58,14 @@ public class MovieService {
 
         movieScraper.uniqueMovie(movies);
 
-//        List<Actor> actorSet = new ArrayList<>();
-//        movies.forEach(element -> actorSet.addAll(element.getActors()));
-//
-//        movieScraper.uniqueActor(actorSet);
-//
-//        System.out.println(actorSet.size() + " actors");
-//        actorRepository.saveAll(actorSet);
-//        System.out.println("saved");
+        List<Actor> actorSet = new ArrayList<>();
+        movies.forEach(element -> actorSet.addAll(element.getActors()));
+
+        movieScraper.uniqueActor(actorSet);
+
+        System.out.println(actorSet.size() + " actors");
+        actorRepository.saveAll(actorSet);
+        System.out.println("saved");
 
         System.out.println(movies.size() + " movies");
         movieRepository.saveAll(movies);
