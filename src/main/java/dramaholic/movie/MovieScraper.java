@@ -190,6 +190,7 @@ public class MovieScraper{
                         element.getAsJsonObject().get("name").getAsString(),
                         "https://image.tmdb.org/t/p/original" + element.getAsJsonObject().get("profile_path").getAsString(),
                         element.getAsJsonObject().get("character").getAsString());
+                if (actor.getName().length() > 20 || actor.getCharacter().length() > 20) continue;
                 movie.addActor(actor);
             }catch (Exception ignored){
 
