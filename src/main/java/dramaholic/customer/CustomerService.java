@@ -128,7 +128,7 @@ public class CustomerService {
     public String addHistory(HashMap<String, String> body) {
         Customer customer = customerRepository.getCustomerByUsernameAndPassword(body.get("username"), body.get("password"));
         Movie movie = movieRepository.findFirstByDbID(Long.parseLong(body.get("dbID")));
-        if (customer.getHistory().contains(movie)) return "already has this in watch later";
+        if (customer.getHistory().contains(movie)) return "already has this in history";
         customer.addHistory(movie);
         customerRepository.save(customer);
         return "added";
