@@ -14,8 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -131,8 +129,7 @@ public class CustomerController {
         if (!customerExists) return new ResponseEntity<>("Invalid credentials", HttpStatus.BAD_REQUEST);
         boolean movieExists = movieService.exists(Long.parseLong(body.get("dbID")));
         if (!movieExists) return new ResponseEntity<>("Cannot find movie", HttpStatus.NOT_FOUND);
-        customerService.addWatchlater(body);
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+        return new ResponseEntity<>(customerService.setWatchlater(body), HttpStatus.OK);
     }
 
     @PostMapping(value = "/history", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
@@ -141,8 +138,7 @@ public class CustomerController {
         if (!customerExists) return new ResponseEntity<>("Invalid credentials", HttpStatus.BAD_REQUEST);
         boolean movieExists = movieService.exists(Long.parseLong(body.get("dbID")));
         if (!movieExists) return new ResponseEntity<>("Cannot find movie", HttpStatus.NOT_FOUND);
-        customerService.addHistory(body);
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+        return new ResponseEntity<>(customerService.addHistory(body), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/watchlater", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})

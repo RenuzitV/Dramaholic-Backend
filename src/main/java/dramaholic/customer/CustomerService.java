@@ -116,20 +116,22 @@ public class CustomerService {
         return customerRepository.existsCustomerByUsernameIgnoreCase(customer.getUsername());
     }
 
-    public void addWatchlater(HashMap<String, String> body) {
+    public String setWatchlater(HashMap<String, String> body) {
         Customer customer = customerRepository.getCustomerByUsernameAndPassword(body.get("username"), body.get("password"));
         Movie movie = movieRepository.findFirstByDbID(Long.parseLong(body.get("dbID")));
+        if (customer.getWatchLater().contains(movie)) return "already has this in watch later";
         customer.addWatchlater(movie);
-        System.out.println(movie);
-        System.out.println("ASDASDASD");
         customerRepository.save(customer);
+        return "added";
     }
 
-    public void addHistory(HashMap<String, String> body) {
+    public String addHistory(HashMap<String, String> body) {
         Customer customer = customerRepository.getCustomerByUsernameAndPassword(body.get("username"), body.get("password"));
         Movie movie = movieRepository.findFirstByDbID(Long.parseLong(body.get("dbID")));
+        if (customer.getHistory().contains(movie)) return "already has this in watch later";
         customer.addHistory(movie);
         customerRepository.save(customer);
+        return "added";
     }
 
     public void removeHistory(HashMap<String, String> body) {
