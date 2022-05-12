@@ -49,8 +49,12 @@ public class CustomerService {
     // Update a Customer
     public String updateCustomer(Long id, Customer s) {
         try {
-            s.setId(id);
-            customerRepository.save(s);
+            Customer customer = customerRepository.getCustomerById(id);
+            if (s.getDob() != null) customer.setDob(s.getDob());
+            if (s.getEmail() != null) customer.setEmail(s.getEmail());
+            if (s.getName() != null) customer.setName(s.getName());
+            if (s.getPassword() != null) customer.setPassword(s.getPassword());
+            customerRepository.save(customer);
             return "Updated";
         }catch(Exception e) {
             return "Failed";

@@ -98,7 +98,7 @@ public class CustomerController {
     @PutMapping(value ="/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<String> updateCustomer(@PathVariable Long id, @RequestBody Customer customer){
         boolean ok = customerService.exists(id);
-        if (ok) return new ResponseEntity<>("not found", HttpStatus.NOT_FOUND);
+        if (!ok) return new ResponseEntity<>("not found", HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(customerService.updateCustomer(id, customer), HttpStatus.OK);
     }
 
