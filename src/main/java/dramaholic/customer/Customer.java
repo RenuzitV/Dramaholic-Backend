@@ -36,6 +36,10 @@ public class Customer implements Serializable {
     @Column()
     private Boolean admin;
 
+    public Customer(){
+
+    }
+
     public Customer(String username, String password) {
         this.username = username;
         this.password = password;
@@ -60,7 +64,8 @@ public class Customer implements Serializable {
         this.history = history;
     }
 
-    public Customer() {
+    public Customer(Long id) {
+        this.id = id;
     }
 
     @Override

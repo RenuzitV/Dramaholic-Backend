@@ -1,25 +1,33 @@
 package dramaholic.customer;
 
+import dramaholic.comment.Comment;
+import dramaholic.comment.CommentRepository;
 import dramaholic.movie.Movie;
 import dramaholic.movie.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class CustomerService {
     private final CustomerRepository customerRepository;
     private final MovieRepository movieRepository;
+    private final CommentRepository commentRepository;
 
     @Autowired
-    public CustomerService(CustomerRepository customerRepository, MovieRepository movieRepository){
-            this.customerRepository = customerRepository;
-            this.movieRepository = movieRepository;
+    public CustomerService(CustomerRepository customerRepository, MovieRepository movieRepository, CommentRepository commentRepository) {
+        this.customerRepository = customerRepository;
+        this.movieRepository = movieRepository;
+        this.commentRepository = commentRepository;
     }
+
 
     public boolean isValid(Customer s){
         return s.getName() != null && s.getDob() != null && s.getUsername() != null && s.getPassword() != null;
@@ -82,6 +90,10 @@ public class CustomerService {
     // Delete a Customer
     public String deleteCustomerByID(Long id) {
         try{
+            List<Movie> movies = movieRepository.findMoviesByComments_User_Id(id);
+            movies.forEach((movie -> movie.getComments().removeIf(comment -> (comment.getUser().getId().equals(id)))));
+            movieRepository.saveAll(movies);
+            commentRepository.deleteCommentsByUser_Id(id);
             customerRepository.deleteById(id);
             return "Deleted";
         }catch(Exception e) {
