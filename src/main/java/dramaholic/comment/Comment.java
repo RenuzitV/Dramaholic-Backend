@@ -23,7 +23,7 @@ public class Comment implements Serializable {
     @JsonBackReference("movie")
     private Movie movie;
     @ManyToMany()
-    @JsonBackReference("upvoters")
+//    @JsonBackReference("upvoters")
     private List<Customer> upvoters;
 
     public Comment(Long id, Customer user, String message, Long upvotes, Movie movie, List<Customer> upvoters) {
@@ -57,6 +57,7 @@ public class Comment implements Serializable {
                 ", upvotes='" + upvotes + '\'' +
                 ", movie='" + movie.getDbID() + '\'' +
                 ", user='" + user + '\'' +
+                ", upvoters='" + upvoters + '\'' +
                 '}';
     }
 
