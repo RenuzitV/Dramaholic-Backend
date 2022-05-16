@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -90,7 +91,7 @@ public class MovieService {
         System.out.println("done");
     }
 
-    public Page<Movie> find(String title, Double rateGT, Double rateLTE, Long episodesGT, Long episodesLTE, String[] country, String[] genre, Pageable pagingSort) {
+    public Page<Movie> find(String title, Double rateGT, Double rateLTE, Long episodesGT, Long episodesLTE, LocalDate dateGT, LocalDate dateLTE, String[] country, String[] genre, Pageable pagingSort) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         booleanBuilder.and(movie.rating.between(rateGT, rateLTE));
         booleanBuilder.and(movie.episodes.between(episodesGT, episodesLTE));
@@ -100,6 +101,8 @@ public class MovieService {
         );
         if (country.length > 0) booleanBuilder.and(movie.country.in(country));
         if (genre.length > 0) booleanBuilder.and(movie.genres.any().in(genre));
+        if (dateGT != null) booleanBuilder.and(movie.date.goe(dateGT));
+        if (dateLTE != null) booleanBuilder.and(movie.date.loe(dateLTE));
 
         return movieRepository.findAll(booleanBuilder, pagingSort);
     }

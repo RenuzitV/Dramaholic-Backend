@@ -44,8 +44,7 @@ public class CustomerController {
     public ResponseEntity<String> addCustomer(@RequestBody Customer customer) {
         if (!customerService.isValid(customer)) return new ResponseEntity<>("not valid", HttpStatus.BAD_REQUEST);
         if (customerService.exists(customer)) return new ResponseEntity<>("existed username", HttpStatus.BAD_REQUEST);
-        customerService.addCustomer(customer);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return new ResponseEntity<>(customerService.addCustomer(customer), HttpStatus.CREATED);
     }
 
     @GetMapping()

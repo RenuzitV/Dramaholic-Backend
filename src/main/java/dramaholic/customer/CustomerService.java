@@ -36,8 +36,7 @@ public class CustomerService {
     // Add new Customer
     public String addCustomer(Customer s) {
         try {
-            customerRepository.save(s);
-            return "saved";
+            return customerRepository.save(s).getId().toString();
         } catch(Exception e) {
             return "failed";
         }

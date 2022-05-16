@@ -1,17 +1,20 @@
 package dramaholic.movie;
 
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -105,6 +108,8 @@ public class MovieController {
             @RequestParam(defaultValue = "") String title,
             @RequestParam(defaultValue = "0") Double rateGT,
             @RequestParam(defaultValue = "10") Double rateLTE,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateGT,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateLTE,
             @RequestParam(defaultValue = "0") Long episodesGT,
             @RequestParam(defaultValue = "10000") Long episodesLTE,
             @RequestParam(defaultValue = "") String[] country,
@@ -121,7 +126,7 @@ public class MovieController {
             }
             Pageable pagingSort = PageRequest.of(page, size, Sort.by(orders));
 
-            Page<Movie> moviePage = movieService.find(title, rateGT, rateLTE, episodesGT, episodesLTE, country, genre, pagingSort);
+            Page<Movie> moviePage = movieService.find(title, rateGT, rateLTE, episodesGT, episodesLTE, dateGT, dateLTE, country, genre, pagingSort);
 
             HttpHeaders responseHeaders = new HttpHeaders();
             List<MediaType> medias = new ArrayList<>();
