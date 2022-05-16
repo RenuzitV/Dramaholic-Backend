@@ -141,6 +141,7 @@ public class MovieService {
     public String updateMovie(Long id, Movie s) {
         try {
             s.setDbID(id);
+            actorRepository.saveAll(s.getActors());
             movieRepository.save(s);
             return "Updated";
         }catch(Exception e) {
