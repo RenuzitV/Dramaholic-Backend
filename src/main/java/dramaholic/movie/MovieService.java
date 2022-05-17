@@ -96,7 +96,7 @@ public class MovieService {
             customer.setHistory(List.of());
         }
 
-        customerRepository.saveAll(customers);
+//        customerRepository.saveAll(customers);
 
         commentRepository.deleteAll();
         actorRepository.deleteAll();
