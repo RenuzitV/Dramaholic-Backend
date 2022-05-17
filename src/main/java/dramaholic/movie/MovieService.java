@@ -4,6 +4,8 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import dramaholic.actor.Actor;
 import dramaholic.actor.ActorRepository;
+import dramaholic.customer.Customer;
+import dramaholic.customer.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,15 +22,17 @@ public class MovieService {
     private final MovieRepository movieRepository;
     private final MovieScraper movieScraper;
     private final ActorRepository actorRepository;
+    private final CustomerRepository customerRepository;
     private final QMovie movie;
     private final List<String> genres;
 
     @Autowired
-    MovieService(MovieRepository movieRepository, MovieScraper movieScraper, ActorRepository actorRepository){
+    MovieService(MovieRepository movieRepository, MovieScraper movieScraper, ActorRepository actorRepository, CustomerRepository customerRepository){
         this.movieRepository = movieRepository;
         this.movieScraper = movieScraper;
         this.actorRepository = actorRepository;
         this.movie = QMovie.movie;
+        this.customerRepository = customerRepository;
         genres = new ArrayList<>(Arrays.asList(
                 "Action & Adventure",
                 "Animation",
@@ -81,6 +85,16 @@ public class MovieService {
         movies.forEach(element -> actorSet.addAll(element.getActors()));
 
         movieScraper.uniqueActor(actorSet);
+
+        List<Customer> customers = customerRepository.findAll();
+
+        for (Customer customer : customers) {
+            customer.setWatchLater(List.of());
+            customer.setHistory(List.of());
+        }
+
+        actorRepository.deleteAll();
+        movieRepository.deleteAll();
 
         System.out.println(actorSet.size() + " actors");
         actorRepository.saveAll(actorSet);

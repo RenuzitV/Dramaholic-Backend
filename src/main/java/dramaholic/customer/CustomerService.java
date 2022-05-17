@@ -1,6 +1,5 @@
 package dramaholic.customer;
 
-import dramaholic.comment.Comment;
 import dramaholic.comment.CommentRepository;
 import dramaholic.movie.Movie;
 import dramaholic.movie.MovieRepository;

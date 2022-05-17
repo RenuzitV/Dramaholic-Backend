@@ -1,7 +1,5 @@
 package dramaholic.comment;
 
-import dramaholic.comment.Comment;
-import dramaholic.customer.Customer;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,6 @@
 package dramaholic.comment;
 
 import dramaholic.customer.Customer;
-import dramaholic.customer.CustomerService;
 import dramaholic.movie.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,13 +14,11 @@ import org.springframework.web.bind.annotation.*;
 public class CommentController {
     private final MovieService movieService;
     private final CommentService commentService;
-    private final CustomerService customerService;
 
     @Autowired
-    public CommentController(MovieService movieService, CommentService commentService, CustomerService customerService) {
+    public CommentController(MovieService movieService, CommentService commentService) {
         this.movieService = movieService;
         this.commentService = commentService;
-        this.customerService = customerService;
     }
 
     @PostMapping()
