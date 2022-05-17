@@ -23,15 +23,19 @@ public class CommentService {
     }
 
     public String addComment(Long dbID, Comment comment) {
-        Movie movie = movieRepository.findFirstByDbID(dbID);
+        try {
+            Movie movie = movieRepository.findFirstByDbID(dbID);
 
-        Customer customerFromCredentials = customerService.getCustomerFromCredentials(comment.getUser());
-        if (customerFromCredentials == null) return "invalid credentials";
-        comment.setUser(customerFromCredentials);
+            Customer customerFromCredentials = customerService.getCustomerFromCredentials(comment.getUser());
+            if (customerFromCredentials == null) return "invalid credentials";
+            comment.setUser(customerFromCredentials);
 
-        movie.addComment(comment);
-        movieRepository.save(movie);
-        return "created";
+            movie.addComment(comment);
+            movieRepository.save(movie);
+            return "created";
+        } catch (Exception e){
+            return "failed";
+        }
     }
 
     public boolean exists(Long id) {

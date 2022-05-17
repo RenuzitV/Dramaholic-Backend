@@ -29,7 +29,7 @@ public class CommentController {
         if (comment.getMovie() == null || comment.getMovie().getDbID() == null) return new ResponseEntity<>("", HttpStatus.BAD_REQUEST);
         boolean ok = movieService.exists(comment.getMovie().getDbID());
         if (!ok) return new ResponseEntity<>("movie does not exist", HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(commentService.addComment(comment.getMovie().getDbID(), comment), HttpStatus.CREATED);
+        return new ResponseEntity<>(commentService.addComment(comment.getMovie().getDbID(), comment), HttpStatus.OK);
     }
 
     @PostMapping("/{id}/vote")
