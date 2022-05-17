@@ -70,7 +70,7 @@ public class MovieService {
         return true;
     }
 
-    @Async
+//    @Async
     public void reloadDatabase(HashMap<String, String> countries){
         List<Movie> movies = new ArrayList<>();
         countries.forEach((country, count) -> {
