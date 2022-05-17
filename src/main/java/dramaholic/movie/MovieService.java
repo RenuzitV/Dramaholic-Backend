@@ -91,6 +91,13 @@ public class MovieService {
 
         List<Customer> customers = customerRepository.findAll();
 
+        for (Customer customer : customers) {
+            customer.setWatchLater(List.of());
+            customer.setHistory(List.of());
+        }
+
+        customerRepository.saveAll(customers);
+
         commentRepository.deleteAll();
         actorRepository.deleteAll();
         movieRepository.deleteAll();
