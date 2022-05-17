@@ -4,6 +4,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import dramaholic.actor.Actor;
 import dramaholic.actor.ActorRepository;
+import dramaholic.comment.CommentRepository;
 import dramaholic.customer.Customer;
 import dramaholic.customer.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +24,18 @@ public class MovieService {
     private final MovieScraper movieScraper;
     private final ActorRepository actorRepository;
     private final CustomerRepository customerRepository;
+    private final CommentRepository commentRepository;
     private final QMovie movie;
     private final List<String> genres;
 
     @Autowired
-    MovieService(MovieRepository movieRepository, MovieScraper movieScraper, ActorRepository actorRepository, CustomerRepository customerRepository){
+    MovieService(MovieRepository movieRepository, MovieScraper movieScraper, ActorRepository actorRepository, CustomerRepository customerRepository, CommentRepository commentRepository){
         this.movieRepository = movieRepository;
         this.movieScraper = movieScraper;
         this.actorRepository = actorRepository;
         this.movie = QMovie.movie;
         this.customerRepository = customerRepository;
+        this.commentRepository = commentRepository;
         genres = new ArrayList<>(Arrays.asList(
                 "Action & Adventure",
                 "Animation",
@@ -93,6 +96,7 @@ public class MovieService {
             customer.setHistory(List.of());
         }
 
+        commentRepository.deleteAll();
         actorRepository.deleteAll();
         movieRepository.deleteAll();
 
