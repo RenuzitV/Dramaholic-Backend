@@ -77,7 +77,12 @@ public class MovieService {
             if (country.equals("g")) country = null;
             movies.addAll(movieScraper.scrapeMovies(Integer.parseInt(count), country, null));
         });
-        movies.add(movieScraper.makeMovieFromID("99966"));
+
+        List<String> defaultMovies = Arrays.asList("99966", "76662", "2778", "1396");
+        for (String movieId : defaultMovies) {
+            movies.add(movieScraper.makeMovieFromID(movieId));
+        }
+
         for (String genre : genres){
             movies.addAll(movieScraper.scrapeMovies(20, null, genre));
         }

@@ -62,8 +62,12 @@ public class MovieController {
 
     @GetMapping("/{id}")
     @ResponseBody
-    public Movie getMovie(@PathVariable("id") long id){
-        return movieService.findById(id);
+    public ResponseEntity<Movie> getMovie(@PathVariable("id") long id){
+        boolean ok = movieService.exists(id);
+
+        if (!ok) return new ResponseEntity<Movie>(new Movie(), HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<Movie>(movieService.findById(id), HttpStatus.OK);
     }
 
     @GetMapping()
